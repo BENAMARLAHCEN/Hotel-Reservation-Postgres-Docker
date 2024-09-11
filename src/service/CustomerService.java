@@ -25,4 +25,9 @@ public class CustomerService {
     public boolean deleteCustomer(int id) {
         return customerRepository.deleteCustomer(id);
     }
+
+    public boolean updateCustomer(int id, String name, String email, String phoneNumber) {
+        Customer customer = new Customer(id, name, email, phoneNumber);
+        return customerRepository.updateCustomer(customer);
+    }
 }

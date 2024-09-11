@@ -1,27 +1,93 @@
 package repository;
 
-import dao.CustomerDAO;
+import conn.DatabaseConnection;
 import model.Customer;
+import repository.inter.ICustomerRepository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRepository {
-    private final CustomerDAO customerDAO = new CustomerDAO();
+public class CustomerRepository implements ICustomerRepository {
+    private final Connection connection;
 
-    public void saveCustomer(Customer customer) {
-        customerDAO.addCustomer(customer);
+    public CustomerRepository() {
+        this.connection = DatabaseConnection.getInstance().getConnection();
     }
 
-    public Customer getCustomerById(int id) {
-        return customerDAO.getCustomerById(id);
+    public void saveCustomer(Customer customer) {
+        String sql = "INSERT INTO customers (name, email, phone_number) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, customer.getName());
+            statement.setString(2, customer.getEmail());
+            statement.setString(3, customer.getPhoneNumber());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Customer getCustomerById(int customerId) {
+        String sql = "SELECT * FROM customers WHERE customer_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, customerId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String phoneNumber = resultSet.getString("phone_number");
+                return new Customer(customerId, name, email, phoneNumber);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<Customer> getAllCustomers() {
-        return customerDAO.getAllCustomers();
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT * FROM customers";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int customerId = resultSet.getInt("customer_id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String phoneNumber = resultSet.getString("phone_number");
+                customers.add(new Customer(customerId, name, email, phoneNumber));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
     }
 
-    public boolean deleteCustomer(int id) {
-        return customerDAO.deleteCustomer(id);
+    public boolean deleteCustomer(int customerId) {
+        String sql = "DELETE FROM customers WHERE customer_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, customerId);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateCustomer(Customer customer) {
+        String sql = "UPDATE customers SET name = ?, email = ?, phone_number = ? WHERE customer_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, customer.getName());
+            statement.setString(2, customer.getEmail());
+            statement.setString(3, customer.getPhoneNumber());
+            statement.setInt(4, customer.getCustomerId());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
 
