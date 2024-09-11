@@ -49,5 +49,46 @@ public class DataPrinter {
         System.out.println("Price: " + room.getPrice());
         System.out.println("-------------------------------------------------");
     }
+
+    public static void printAllRooms(List<Room> allRooms) {
+        System.out.println("All Rooms:");
+        for (Room room : allRooms) {
+            printRoomDetails(room);
+        }
+    }
+
+    public static void printAllHotels(List<Hotel> allHotels) {
+        System.out.println("All Hotels:");
+        for (Hotel hotel : allHotels) {
+            printHotelDetails(hotel);
+        }
+    }
+
+    public static void printReport(String occupancy, String occupancyReport) {
+        System.out.println(occupancy + " Report:");
+        System.out.println(occupancyReport);
+        System.out.println("-------------------------------------------------");
+    }
+
+    public static void printAllReservations(List<Reservation> allReservations) {
+        System.out.println("All Reservations:");
+        for (Reservation reservation : allReservations) {
+            printReservationDetails(reservation);
+        }
+    }
+
+    public static void printAllCustomers(List<Customer> allCustomers) {
+        System.out.println("All Customers:");
+        for (Customer customer : allCustomers) {
+            printCustomerDetails(customer);
+        }
+    }
+
+    public static void printAvailableRooms(List<Room> availableRooms) {
+        System.out.println("Available Rooms:");
+        for (Room room : availableRooms) {
+            printRoomDetails(room);
+        }
+    }
 }
 

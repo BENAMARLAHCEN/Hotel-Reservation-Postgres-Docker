@@ -21,7 +21,7 @@ public class DatabaseConnection {
     }
 
     // Method to get the Singleton instance of the connection
-    public static Connection getConnection() {
+    public Connection getConnection() {
         if (connection == null) {
             try {
                 // Load PostgreSQL JDBC driver
