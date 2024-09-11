@@ -25,4 +25,9 @@ public class HotelService {
     public boolean deleteHotel(int id) {
         return hotelRepository.deleteHotel(id);
     }
+
+    public boolean updateHotel(int id, String name, String location) {
+        Hotel hotel = new Hotel(id, name, location);
+        return hotelRepository.updateHotel(hotel);
+    }
 }
