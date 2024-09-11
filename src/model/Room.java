@@ -4,11 +4,13 @@ public class Room {
     private int roomId;
     private RoomType roomType;
     private double price;
+    private int hotelId;
 
-    public Room(int roomId, RoomType roomType, double price) {
+    public Room(int roomId, RoomType roomType, double price, int hotelId) {
         this.roomId = roomId;
         this.roomType = roomType;
         this.price = price;
+        this.hotelId = hotelId;
     }
 
     // Getters and Setters
@@ -34,5 +36,13 @@ public class Room {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(int hotelId) {
+        this.hotelId = hotelId;
     }
 }

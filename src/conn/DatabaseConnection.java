@@ -1,4 +1,4 @@
-package dao;
+package conn;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,7 +17,6 @@ public class DatabaseConnection {
 
     // Private constructor to prevent instantiation
     private DatabaseConnection() {
-        getInstance();
     }
 
     // Method to get the Singleton instance of the connection
