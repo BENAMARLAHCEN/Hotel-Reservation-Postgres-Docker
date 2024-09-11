@@ -9,8 +9,8 @@ import java.util.List;
 public class RoomService {
     private final RoomRepository roomRepository = new RoomRepository();
 
-    public void createRoom(RoomType roomType, double price) {
-        Room room = new Room(0, roomType, price);
+    public void createRoom(RoomType roomType, double price, int hotelId) {
+        Room room = new Room(0, roomType, price, hotelId);
         roomRepository.saveRoom(room);
         System.out.println("Room created successfully!");
     }
@@ -25,5 +25,10 @@ public class RoomService {
 
     public boolean deleteRoom(int id) {
         return roomRepository.deleteRoom(id);
+    }
+
+    public boolean updateRoom(int id, RoomType roomType, double price, int hotelId) {
+        Room room = new Room(id, roomType, price, hotelId);
+        return roomRepository.updateRoom(room);
     }
 }
