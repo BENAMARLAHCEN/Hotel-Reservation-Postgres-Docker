@@ -4,7 +4,9 @@ import model.Customer;
 import model.Hotel;
 import model.Reservation;
 import model.Room;
+import service.PricingService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class DataPrinter {
@@ -38,6 +40,7 @@ public class DataPrinter {
         System.out.println("Check-in Date: " + reservation.getCheckInDate());
         System.out.println("Check-out Date: " + reservation.getCheckOutDate());
         System.out.println("Payment Status: " + reservation.getPaymentStatus());
+        System.out.println("Total Cost: " + reservation.getTotalCost());
         System.out.println("-------------------------------------------------");
     }
 
@@ -74,6 +77,9 @@ public class DataPrinter {
         System.out.println("All Reservations:");
         for (Reservation reservation : allReservations) {
             printReservationDetails(reservation);
+            if (allReservations.indexOf(reservation) != allReservations.size() - 1) {
+                System.out.println("=================================================");
+            }
         }
     }
 
@@ -84,10 +90,14 @@ public class DataPrinter {
         }
     }
 
-    public static void printAvailableRooms(List<Room> availableRooms) {
-        System.out.println("Available Rooms:");
+    public static void printAvailableRooms(List<Room> availableRooms, LocalDate checkInDate, LocalDate checkOutDate) {
+        System.out.println("Available Rooms from " + checkInDate + " to " + checkOutDate + ":");
         for (Room room : availableRooms) {
-            printRoomDetails(room);
+            System.out.println("Room Details:");
+            System.out.println("Room ID: " + room.getRoomId());
+            System.out.println("Room Type: " + room.getRoomType());
+            System.out.println("Price: " + new PricingService().calculateTotalCost(room.getPrice(), checkInDate, checkOutDate));
+            System.out.println("-------------------------------------------------");
         }
     }
 }

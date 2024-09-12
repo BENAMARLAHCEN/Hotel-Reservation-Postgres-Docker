@@ -31,9 +31,8 @@ public class ReservationController {
             }
     }
 
-    public void getAvailableRooms(String location, RoomType roomType, LocalDate checkInDate, LocalDate checkOutDate) {
-        List<Room> availableRooms = reservationService.getAvailableRoomsInDateRange(checkInDate, checkOutDate, roomType,location);
-        DataPrinter.printAvailableRooms(availableRooms);
+    public List<Room> getAvailableRooms(String location, RoomType roomType, LocalDate checkInDate, LocalDate checkOutDate) {
+        return reservationService.getAvailableRoomsInDateRange(checkInDate, checkOutDate, roomType,location);
     }
 
     public void getReservationById() {
@@ -116,7 +115,7 @@ public class ReservationController {
 
                     System.out.println("Enter check-out date (yyyy-MM-dd):");
                     LocalDate checkOutDate = LocalDate.parse(scanner.nextLine());
-                    getAvailableRooms(location, roomType, checkInDate, checkOutDate);
+                    DataPrinter.printAvailableRooms(getAvailableRooms(location, roomType, checkInDate, checkOutDate), checkInDate, checkOutDate);
                     System.out.println("Enter room id:");
                     int roomId = scanner.nextInt();
                     scanner.nextLine();

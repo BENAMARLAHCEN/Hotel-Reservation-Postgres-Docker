@@ -1,40 +1,47 @@
 package service;
 
+import model.Season;
+import model.SpacialEvent;
+import repository.SeasonRepository;
+import repository.SpacialEventRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 public class PricingService {
+    private final SeasonRepository seasonRepository;
+    private final SpacialEventRepository spacialEventRepository;
 
-    public double calculatePrice(double price, int discount) {
-        return price - (price * discount / 100);
+    public PricingService() {
+        this.seasonRepository = new SeasonRepository();
+        this.spacialEventRepository = new SpacialEventRepository();
     }
 
-    public double calculatePrice(double price, int discount, int tax) {
-        return price - (price * discount / 100) + (price * tax / 100);
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge;
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge, int deliveryCharge) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge + deliveryCharge;
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge, int deliveryCharge, int tip) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge + deliveryCharge + tip;
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge, int deliveryCharge, int tip, int extraCharge) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge + deliveryCharge + tip + extraCharge;
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge, int deliveryCharge, int tip, int extraCharge, int discount2) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge + deliveryCharge + tip + extraCharge - (price * discount2 / 100);
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge, int deliveryCharge, int tip, int extraCharge, int discount2, int tax2) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge + deliveryCharge + tip + extraCharge - (price * discount2 / 100) + (price * tax2 / 100);
-    }
-
-    public double calculatePrice(double price, int discount, int tax, int serviceCharge, int deliveryCharge, int tip, int extraCharge, int discount2, int tax2, int serviceCharge2) {
-        return price - (price * discount / 100) + (price * tax / 100) + serviceCharge + deliveryCharge + tip + extraCharge - (price * discount2 / 100) + (price * tax2 / 100) + serviceCharge2;
+    public double calculateTotalCost(double basePrice, LocalDate checkInDate, LocalDate checkOutDate) {
+        double totalCost = 0;
+        double dayPrice ;
+        Optional<List<Season>> seasons = seasonRepository.getSeasons();
+        Optional<List<SpacialEvent>> spacialEvents = spacialEventRepository.getSpacialEvents();
+        while (checkInDate.isBefore(checkOutDate) || checkInDate.isEqual(checkOutDate)) {
+            dayPrice = basePrice;
+            if (seasons.isPresent()) {
+                for (Season season : seasons.get()) {
+                    if (checkInDate.isAfter(season.getStartDate()) && checkInDate.isBefore(season.getEndDate())) {
+                        dayPrice *= season.getPriceMultiplier();
+                    }
+                }
+            }
+            if (spacialEvents.isPresent()) {
+                for (SpacialEvent spacialEvent : spacialEvents.get()) {
+                    if (checkInDate.equals(spacialEvent.getEventDate())) {
+                        dayPrice *= spacialEvent.getPriceMultiplier();
+                    }
+                }
+            }
+            totalCost += dayPrice;
+            checkInDate = checkInDate.plusDays(1);
+        }
+        return totalCost;
     }
 }

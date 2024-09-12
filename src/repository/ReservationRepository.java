@@ -20,8 +20,8 @@ public class ReservationRepository implements IReservationRepository {
     }
 
     public Reservation saveReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservations (customer_id, room_id, hotel_id, check_in_date, check_out_date, payment_status) " +
-                "VALUES (?, ?, ?, ?, ?, ?::payment_status)";
+        String sql = "INSERT INTO reservations (customer_id, room_id, hotel_id, check_in_date, check_out_date, payment_status, total_cost) " +
+                "VALUES (?, ?, ?, ?, ?, ?::payment_status, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, reservation.getCustomer().getCustomerId());
             statement.setInt(2, reservation.getRoom().getRoomId());
@@ -29,6 +29,7 @@ public class ReservationRepository implements IReservationRepository {
             statement.setObject(4, reservation.getCheckInDate());
             statement.setObject(5, reservation.getCheckOutDate());
             statement.setString(6, reservation.getPaymentStatus().name());
+            statement.setDouble(7, reservation.getTotalCost());
             statement.executeUpdate();
             return getReservationById(getLastReservationId());
         } catch (SQLException e) {
@@ -63,12 +64,13 @@ public class ReservationRepository implements IReservationRepository {
                 LocalDate checkInDate = resultSet.getObject("check_in_date", LocalDate.class);
                 LocalDate checkOutDate = resultSet.getObject("check_out_date", LocalDate.class);
                 PaymentStatus paymentStatus = PaymentStatus.valueOf(resultSet.getString("payment_status"));
+                double totalCost = resultSet.getDouble("total_cost");
 
                 Customer customer = new CustomerRepository().getCustomerById(customerId);
                 Room room = new RoomRepository().getRoomById(roomId);
                 Hotel hotel = new HotelRepository().getHotelById(hotelId);
 
-                return new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus);
+                return new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus, totalCost);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,12 +91,13 @@ public class ReservationRepository implements IReservationRepository {
                 LocalDate checkInDate = resultSet.getObject("check_in_date", LocalDate.class);
                 LocalDate checkOutDate = resultSet.getObject("check_out_date", LocalDate.class);
                 PaymentStatus paymentStatus = PaymentStatus.valueOf(resultSet.getString("payment_status"));
+                double totalCost = resultSet.getDouble("total_cost");
 
                 Customer customer = new CustomerRepository().getCustomerById(customerId);
                 Room room = new RoomRepository().getRoomById(roomId);
                 Hotel hotel = new HotelRepository().getHotelById(hotelId);
 
-                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus));
+                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus, totalCost));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -155,12 +158,13 @@ public class ReservationRepository implements IReservationRepository {
                 LocalDate checkInDate = resultSet.getObject("check_in_date", LocalDate.class);
                 LocalDate checkOutDate = resultSet.getObject("check_out_date", LocalDate.class);
                 PaymentStatus paymentStatus = PaymentStatus.valueOf(resultSet.getString("payment_status"));
+                double totalCost = resultSet.getDouble("total_cost");
 
                 Customer customer = new CustomerRepository().getCustomerById(customerId);
                 Room room = new RoomRepository().getRoomById(roomId);
                 Hotel hotel = new HotelRepository().getHotelById(hotelId);
 
-                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus));
+                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus, totalCost));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,12 +186,13 @@ public class ReservationRepository implements IReservationRepository {
                 LocalDate checkInDate = resultSet.getObject("check_in_date", LocalDate.class);
                 LocalDate checkOutDate = resultSet.getObject("check_out_date", LocalDate.class);
                 PaymentStatus paymentStatus = PaymentStatus.valueOf(resultSet.getString("payment_status"));
+                double totalCost = resultSet.getDouble("total_cost");
 
                 Customer customer = new CustomerRepository().getCustomerById(id);
                 Room room = new RoomRepository().getRoomById(roomId);
                 Hotel hotel = new HotelRepository().getHotelById(hotelId);
 
-                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus));
+                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate, checkOutDate, paymentStatus, totalCost));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -213,12 +218,13 @@ public class ReservationRepository implements IReservationRepository {
                 LocalDate checkInDate2 = resultSet.getObject("check_in_date", LocalDate.class);
                 LocalDate checkOutDate2 = resultSet.getObject("check_out_date", LocalDate.class);
                 PaymentStatus paymentStatus = PaymentStatus.valueOf(resultSet.getString("payment_status"));
+                double totalCost = resultSet.getDouble("total_cost");
 
                 Customer customer = new CustomerRepository().getCustomerById(customerId);
                 Room room = new RoomRepository().getRoomById(roomId);
                 Hotel hotel = new HotelRepository().getHotelById(hotelId);
 
-                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate2, checkOutDate2, paymentStatus));
+                reservations.add(new Reservation(reservationId, customer, room, hotel, checkInDate2, checkOutDate2, paymentStatus, totalCost));
             }
         } catch (SQLException e) {
             e.printStackTrace();

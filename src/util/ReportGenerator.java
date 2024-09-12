@@ -13,13 +13,13 @@ public class ReportGenerator {
         long totalCancelled = reservations.stream()
                 .filter(r -> r.getPaymentStatus() == PaymentStatus.CANCELLED)
                 .count();
-        return "Total Reservations: " + totalReservations + "\nCancelled Reservations: " + totalCancelled;
+        return "Total Reservations: " + totalReservations + "\nCancelled Reservations: " + totalCancelled + "\nOccupancy Rate: " + (totalReservations - totalCancelled) * 100 / totalReservations + "%";
     }
 
     public static String generateRevenueReport(List<Reservation> reservations) {
         double totalRevenue = reservations.stream()
                 .filter(r -> r.getPaymentStatus() == PaymentStatus.PAID)
-                .mapToDouble(r -> r.getRoom().getPrice())
+                .mapToDouble(Reservation::getTotalCost)
                 .sum();
         return "Total Revenue: $" + totalRevenue;
     }

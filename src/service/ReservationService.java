@@ -18,8 +18,8 @@ public class ReservationService {
         if (!DateValidator.isFutureDate(checkInDate) || !DateValidator.isFutureDate(checkOutDate)) {
             throw new IllegalArgumentException("Date must be in the future.");
         }
-        
-        Reservation reservation = new Reservation(0,customer, room, hotel, checkInDate, checkOutDate, PaymentStatus.PAID);
+        double totalCost = new PricingService().calculateTotalCost(room.getPrice(), checkInDate, checkOutDate);
+        Reservation reservation = new Reservation(0,customer, room, hotel, checkInDate, checkOutDate, PaymentStatus.PAID, totalCost);
         Reservation savedReservation = reservationRepository.saveReservation(reservation);
         if (savedReservation == null) {
             throw new IllegalArgumentException("Reservation could not be created.");

@@ -10,9 +10,10 @@ public class Reservation {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private PaymentStatus paymentStatus;
+    private double totalCost;
 
     public Reservation(int reservationId, Customer customer, Room room, Hotel hotel,
-                       LocalDate checkInDate, LocalDate checkOutDate, PaymentStatus paymentStatus) {
+                       LocalDate checkInDate, LocalDate checkOutDate, PaymentStatus paymentStatus, double totalCost) {
         this.reservationId = reservationId;
         this.customer = customer;
         this.room = room;
@@ -20,6 +21,7 @@ public class Reservation {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.paymentStatus = paymentStatus;
+        this.totalCost = totalCost;
     }
 
     // Getters and Setters
@@ -77,5 +79,13 @@ public class Reservation {
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
     }
 }
