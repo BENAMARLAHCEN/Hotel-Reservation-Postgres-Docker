@@ -20,16 +20,18 @@ public class RoomRepository implements IRoomRepository {
     }
 
     public void saveRoom(Room room) {
-        String sql = "INSERT INTO rooms (room_type, price) VALUES (?, ?)";
+        String sql = "INSERT INTO rooms (room_type, price, hotel_id) VALUES (?::room_type, ?, ?)";  // Cast room_type to enum
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, room.getRoomType().name());
+            statement.setString(1, room.getRoomType().name());  // Set room_type as string
             statement.setDouble(2, room.getPrice());
+            statement.setInt(3, room.getHotelId());
             statement.executeUpdate();
             room.setRoomId(getLastRoomId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     private int getLastRoomId() {
         String sql = "SELECT MAX(room_id) AS max_id FROM rooms";
@@ -92,9 +94,9 @@ public class RoomRepository implements IRoomRepository {
     }
 
     public boolean updateRoom(Room room) {
-        String sql = "UPDATE rooms SET room_type = ?, price = ? WHERE room_id = ?";
+        String sql = "UPDATE rooms SET room_type = ?::room_type, price = ? WHERE room_id = ?";  // Cast room_type to enum
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, room.getRoomType().name());
+            statement.setString(1, room.getRoomType().toString());  // Set room_type as string
             statement.setDouble(2, room.getPrice());
             statement.setInt(3, room.getRoomId());
             int rowsUpdated = statement.executeUpdate();

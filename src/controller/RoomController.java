@@ -16,13 +16,26 @@ public class RoomController {
     public void createRoom() {
         System.out.println("Enter room hotel id:");
         int hotelId = scanner.nextInt();
+        scanner.nextLine();  // Consume the newline character after nextInt()
+
         System.out.println("Enter room type:");
-        RoomType roomType = RoomType.valueOf(scanner.nextLine().toUpperCase());
+        String type = scanner.nextLine().trim().toUpperCase();  // Read room type input
+        RoomType roomType;
+
+        try {
+            roomType = RoomType.valueOf(type);  // Convert input to RoomType enum
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid room type. Please enter one of the following: SINGLE, DOUBLE, SUITE, DELUXE.");
+            return;
+        }
+
         System.out.println("Enter price:");
         double price = scanner.nextDouble();
-        scanner.nextLine();
+        scanner.nextLine();  // Consume the newline character after nextDouble()
+
         roomService.createRoom(roomType, price, hotelId);
     }
+
 
     public void getRoomById() {
         System.out.println("Enter room id:");
