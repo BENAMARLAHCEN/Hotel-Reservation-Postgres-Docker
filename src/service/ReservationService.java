@@ -1,10 +1,8 @@
 package service;
 
 import model.*;
-import repository.CustomerRepository;
-import repository.HotelRepository;
 import repository.ReservationRepository;
-import repository.RoomRepository;
+import util.DataPrinter;
 import util.DateValidator;
 
 import java.time.LocalDate;
@@ -17,10 +15,22 @@ public class ReservationService {
         if (!DateValidator.isCheckInBeforeCheckOut(checkInDate, checkOutDate)) {
             throw new IllegalArgumentException("Check-in date must be before check-out date.");
         }
+        if (!DateValidator.isFutureDate(checkInDate) || !DateValidator.isFutureDate(checkOutDate)) {
+            throw new IllegalArgumentException("Date must be in the future.");
+        }
+        
+        Reservation reservation = new Reservation(0,customer, room, hotel, checkInDate, checkOutDate, PaymentStatus.PAID);
+        Reservation savedReservation = reservationRepository.saveReservation(reservation);
+        if (savedReservation == null) {
+            throw new IllegalArgumentException("Reservation could not be created.");
+        }else {
+            System.out.println("Reservation created successfully.");
+            DataPrinter.printReservationDetails(savedReservation);
+        }
+    }
 
-        Reservation reservation = new Reservation(0,customer, room, hotel, checkInDate, checkOutDate, PaymentStatus.PENDING);
-        reservationRepository.saveReservation(reservation);
-        System.out.println("Reservation created successfully!");
+    public List<Reservation> getRoomInDateRange(LocalDate checkInDate, LocalDate checkOutDate,RoomType roomType) {
+        return reservationRepository.getRoomInDateRange(checkInDate, checkOutDate,roomType);
     }
 
     public Reservation getReservationById(int id) {
@@ -33,5 +43,29 @@ public class ReservationService {
 
     public boolean cancelReservation(int id) {
         return reservationRepository.cancelReservation(id);
+    }
+
+    public boolean deleteReservation(int id) {
+        return reservationRepository.deleteReservation(id);
+    }
+
+    public List<Reservation> getReservationByCustomerId(int id) {
+        return reservationRepository.getReservationByCustomerId(id);
+    }
+
+    public List<Room> getAvailableRoomsInDateRange(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType, String location) {
+        return reservationRepository.getAvailableRoomsInDateRange(checkInDate, checkOutDate, roomType, location);
+    }
+
+    public Customer getCustomerById(int customerID) {
+        return (new CustomerService()).getCustomerById(customerID);
+    }
+
+    public Hotel getHotelByRoomId(int roomID) {
+        return (new HotelService()).getHotelByRoomId(roomID);
+    }
+
+    public Room getRoomById(int roomID) {
+        return (new RoomService()).getRoomById(roomID);
     }
 }

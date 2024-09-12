@@ -15,4 +15,6 @@ public interface IHotelRepository {
     boolean deleteHotel(int hotelId);
 
     boolean updateHotel(Hotel hotel);
+
+    Hotel getHotelByRoomId(int roomID);
 }

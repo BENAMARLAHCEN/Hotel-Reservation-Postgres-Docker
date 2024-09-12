@@ -30,4 +30,8 @@ public class HotelService {
         Hotel hotel = new Hotel(id, name, location);
         return hotelRepository.updateHotel(hotel);
     }
+
+    public Hotel getHotelByRoomId(int roomID) {
+        return hotelRepository.getHotelByRoomId(roomID);
+    }
 }

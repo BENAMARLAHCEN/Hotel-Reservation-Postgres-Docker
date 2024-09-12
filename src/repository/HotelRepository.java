@@ -88,4 +88,21 @@ public class HotelRepository implements IHotelRepository {
         return false;
     }
 
+    public Hotel getHotelByRoomId(int roomID){
+        String sql = "SELECT * FROM hotels WHERE hotel_id = (SELECT hotel_id FROM rooms WHERE room_id = ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, roomID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int hotelId = resultSet.getInt("hotel_id");
+                String hotelName = resultSet.getString("hotel_name");
+                String location = resultSet.getString("location");
+                return new Hotel(hotelId, hotelName, location);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
