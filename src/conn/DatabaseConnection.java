@@ -11,15 +11,12 @@ public class DatabaseConnection {
     private static final String USER = "admin";
     private static final String PASSWORD = "adminpassword";
 
-    // Singleton instance of the Connection
     private static Connection connection = null;
     private static DatabaseConnection instance = null;
 
-    // Private constructor to prevent instantiation
     private DatabaseConnection() {
     }
 
-    // Method to get the Singleton instance of the connection
     public Connection getConnection() {
         if (connection == null) {
             try {
