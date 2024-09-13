@@ -17,7 +17,7 @@ public interface IReservationRepository {
 
     List<Reservation> getAllReservations();
 
-    boolean cancelReservation(int reservationId);
+    Reservation cancelReservation(int reservationId);
 
     boolean updateReservation(Reservation reservation);
 

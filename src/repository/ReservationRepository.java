@@ -116,16 +116,16 @@ public class ReservationRepository implements IReservationRepository {
         return false;
     }
 
-    public boolean cancelReservation(int id) {
+    public Reservation cancelReservation(int id) {
         String sql = "UPDATE reservations SET payment_status = ?::payment_status WHERE reservation_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, PaymentStatus.CANCELLED.name());
             statement.setInt(2, id);
-            return statement.executeUpdate() > 0;
+            return  getReservationById(id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public boolean updateReservation(Reservation reservation) {

@@ -42,7 +42,12 @@ public class ReservationService {
     }
 
     public boolean cancelReservation(int id) {
-        return reservationRepository.cancelReservation(id);
+        Reservation reservation = reservationRepository.getReservationById(id);
+        if(reservation != null){
+            new CustomerService().addAmountDue(reservation.getCustomer().getCustomerId(), reservation.getTotalCost());
+            return true;
+        }
+        return false;
     }
 
     public boolean deleteReservation(int id) {
@@ -68,4 +73,6 @@ public class ReservationService {
     public Room getRoomById(int roomID) {
         return (new RoomService()).getRoomById(roomID);
     }
+
+
 }

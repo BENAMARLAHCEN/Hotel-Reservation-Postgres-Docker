@@ -1,6 +1,7 @@
 package controller;
 
 import model.*;
+import service.PricingService;
 import service.ReservationService;
 import util.DataPrinter;
 import util.DateValidator;
@@ -68,6 +69,12 @@ public class ReservationController {
         System.out.println("Enter reservation id:");
         int id = scanner.nextInt();
         scanner.nextLine();
+        System.out.println("Are you sure you want to cancel the reservation? (yes/no)");
+        String confirmation = scanner.nextLine();
+        if (!confirmation.equals("yes")) {
+            System.out.println("Cancellation cancelled!");
+            return;
+        }
         if (reservationService.cancelReservation(id)) {
             System.out.println("Reservation cancelled successfully!");
         } else {
@@ -122,6 +129,15 @@ public class ReservationController {
                     System.out.println("Enter customer ID:");
                     int customerId = scanner.nextInt();
                     scanner.nextLine();
+                    if (!checkCustomerIsCanPay(customerId,roomId,checkInDate,checkOutDate)) {
+                        break;
+                    }
+                    System.out.println("Are you sure you want to create a reservation? (yes/no)");
+                    String confirmation = scanner.nextLine();
+                    if (!confirmation.equals("yes")) {
+                        System.out.println("Reservation cancelled!");
+                        break;
+                    }
                     createReservation(customerId,roomId, checkInDate, checkOutDate);
                     break;
                 case 2:
@@ -149,5 +165,16 @@ public class ReservationController {
                     System.out.println("Invalid option!");
             }
         }
+    }
+
+    private boolean checkCustomerIsCanPay(int customerId, int roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        Customer customer = reservationService.getCustomerById(customerId);
+        Room room = reservationService.getRoomById(roomId);
+        double totalCost = new PricingService().calculateTotalCost(room.getPrice(), checkInDate, checkOutDate);
+        if (customer.getAmountDue() < totalCost) {
+            System.out.println("Customer can't pay the total cost!");
+            return false;
+        }
+        return true;
     }
 }
