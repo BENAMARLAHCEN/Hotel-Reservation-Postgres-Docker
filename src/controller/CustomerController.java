@@ -16,7 +16,10 @@ public class CustomerController {
         String email = scanner.nextLine();
         System.out.println("Enter customer phone number:");
         String phoneNumber = scanner.nextLine();
-        customerService.createCustomer(name, email, phoneNumber);
+        System.out.println("Enter customer amount due:");
+        String amountDueStr = scanner.nextLine();
+        double amountDue = Double.parseDouble(amountDueStr.replace(",", "."));
+        customerService.createCustomer(name, email, phoneNumber, amountDue);
     }
 
     public void getCustomerById() {
@@ -64,10 +67,15 @@ public class CustomerController {
         System.out.println("3. Get all customers");
         System.out.println("4. Delete customer");
         System.out.println("5. Update customer");
-        System.out.println("6. Back");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice) {
+        System.out.println("6. Pay amount due");
+        System.out.println("7. Add amount due");
+        System.out.println("0. Back");
+        boolean exit = false;
+        do {
+            System.out.println("Enter choice:");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
             case 1:
                 createCustomer();
                 break;
@@ -84,9 +92,29 @@ public class CustomerController {
                 updateCustomer();
                 break;
             case 6:
+                System.out.println("Enter customer id:");
+                int id = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("Enter amount to pay:");
+                String amountDueStr = scanner.nextLine();
+                double amount = Double.parseDouble(amountDueStr.replace(",", "."));
+                customerService.payAmountDue(id, amount);
+                break;
+            case 7:
+                System.out.println("Enter customer id:");
+                int id2 = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("Enter amount to add:");
+                String amountDueStr2 = scanner.nextLine();
+                double amount2 = Double.parseDouble(amountDueStr2.replace(",", "."));
+                customerService.addAmountDue(id2, amount2);
+                break;
+            case 0:
+                exit = true;
                 break;
             default:
                 System.out.println("Invalid choice!");
         }
+        } while (!exit);
     }
 }

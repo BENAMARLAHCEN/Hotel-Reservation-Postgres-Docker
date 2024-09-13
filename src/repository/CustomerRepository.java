@@ -19,11 +19,12 @@ public class CustomerRepository implements ICustomerRepository {
     }
 
     public void saveCustomer(Customer customer) {
-        String sql = "INSERT INTO customers (name, email, phone_number) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO customers (name, email, phone_number,amount_due) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, customer.getName());
             statement.setString(2, customer.getEmail());
             statement.setString(3, customer.getPhoneNumber());
+            statement.setDouble(4, customer.getAmountDue());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,7 +40,8 @@ public class CustomerRepository implements ICustomerRepository {
                 String name = resultSet.getString("name");
                 String email = resultSet.getString("email");
                 String phoneNumber = resultSet.getString("phone_number");
-                return new Customer(customerId, name, email, phoneNumber);
+                double amountDue = resultSet.getDouble("amount_due");
+                return new Customer(customerId, name, email, phoneNumber, amountDue);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,7 +59,8 @@ public class CustomerRepository implements ICustomerRepository {
                 String name = resultSet.getString("name");
                 String email = resultSet.getString("email");
                 String phoneNumber = resultSet.getString("phone_number");
-                customers.add(new Customer(customerId, name, email, phoneNumber));
+                double amountDue = resultSet.getDouble("amount_due");
+                customers.add(new Customer(customerId, name, email, phoneNumber, amountDue));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,6 +86,30 @@ public class CustomerRepository implements ICustomerRepository {
             statement.setString(2, customer.getEmail());
             statement.setString(3, customer.getPhoneNumber());
             statement.setInt(4, customer.getCustomerId());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean payAmountDue(int id, double amount) {
+        String sql = "UPDATE customers SET amount_due = amount_due - ? WHERE customer_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setDouble(1, amount);
+            statement.setInt(2, id);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean addAmountDue(int id2, double amount2) {
+        String sql = "UPDATE customers SET amount_due = amount_due + ? WHERE customer_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setDouble(1, amount2);
+            statement.setInt(2, id2);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
